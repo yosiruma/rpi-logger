@@ -48,3 +48,41 @@ sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 sudo certbot certonly --standalone
 ```
+
+証明書を適当な場所に移動する
+
+```bash
+mkdir certs
+sudo cp /etc/letsencrypt/live/<domain name>/fullchain.pem certs/server.crt
+sudo cp /etc/letsencrypt/live/<domain name>/privkey.pem certs/server.key
+```
+
+`default.conf`を作成して
+
+```
+server {
+    listen              443 ssl;
+    server_name         <domain name>;
+    ssl_certificate     /etc/nginx/certs/server.crt;
+    ssl_certificate_key /etc/nginx/certs/server.key;
+
+    location / {
+        root   /usr/share/nginx/html;
+    }
+}
+```
+
+`compose.yaml`を記述する
+
+```yaml
+services:
+  nginx:
+    image: nginx
+    ports:
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certs:/etc/nginx/certs
+```
+
+`docker compose up`して自分のドメインにアクセスし，nginx のページが表示されれば OK．
