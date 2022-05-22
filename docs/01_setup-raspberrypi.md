@@ -16,5 +16,5 @@ OS 書き込み・起動が完了したら，SSH 接続し，`apt`のアップ�
 
 ```bash
 $ sudo apt update
-$ sudo pat upgrade
+$ sudo apt upgrade
 ```
